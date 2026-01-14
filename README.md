@@ -160,7 +160,7 @@ Use .env.example:
 env
 Copy code
 RPC_URL=http://127.0.0.1:8545
-DEPLOYER_PRIVATE_KEY=your_private_key_here
+DEPLOYER_PRIVATE_KEY=private_key_here
 ⚠️ Never commit real private keys.
 
 🚀 Project Highlights
@@ -185,6 +185,3 @@ Portfolio-grade
 
 👤 Author
 Chopra Lakshmi Sathvika
-
-yaml
-Copy code
