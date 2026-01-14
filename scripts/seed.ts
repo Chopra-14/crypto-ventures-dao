@@ -3,9 +3,11 @@ dotenv.config();
 
 import { ethers } from "hardhat";
 
-
 async function main() {
-  // 🔎 Debug: confirm env variables are loaded
+  /*//////////////////////////////////////////////////////////////
+                        ENV VALIDATION
+  //////////////////////////////////////////////////////////////*/
+
   console.log("Loaded addresses:");
   console.log("GovernanceToken:", process.env.GOVERNANCE_TOKEN_ADDRESS);
   console.log("GovernanceDAO:", process.env.GOVERNANCE_DAO_ADDRESS);
@@ -17,7 +19,12 @@ async function main() {
     throw new Error("❌ Missing contract addresses in .env file");
   }
 
-  const [deployer, member1, member2, member3] = await ethers.getSigners();
+  /*//////////////////////////////////////////////////////////////
+                          SIGNERS
+  //////////////////////////////////////////////////////////////*/
+
+  const [deployer, member1, member2, member3] =
+    await ethers.getSigners();
 
   console.log("Seeding DAO state...");
   console.log("Member1:", member1.address);
@@ -25,7 +32,7 @@ async function main() {
   console.log("Member3:", member3.address);
 
   /*//////////////////////////////////////////////////////////////
-                      LOAD DEPLOYED CONTRACTS
+                    LOAD DEPLOYED CONTRACTS
   //////////////////////////////////////////////////////////////*/
 
   const governanceToken = await ethers.getContractAt(
@@ -58,19 +65,12 @@ async function main() {
 
   /*//////////////////////////////////////////////////////////////
                         CREATE PROPOSAL
+        ⚠️ createProposal() TAKES NO ARGUMENTS
   //////////////////////////////////////////////////////////////*/
 
-  const tx = await governanceDAO
-    .connect(member1)
-    .createProposal(
-      0, // HIGH_CONVICTION
-      "Invest in Layer-2 scaling project"
-    );
+  await (await governanceDAO.connect(member1).createProposal()).wait();
 
-  const receipt = await tx.wait();
-
-  // ProposalCreated event is the first event
-  const proposalId = receipt!.logs[0].args![0];
+  const proposalId = await governanceDAO.proposalCount();
 
   console.log("✅ Proposal created with ID:", proposalId.toString());
 
